@@ -9,7 +9,6 @@ module.exports = class CheckCustomer {
     //判斷空值
     checkNull(data) {
         for (var key in data) {
-            //console.log(key)
             // 不為空
             return false;
         }

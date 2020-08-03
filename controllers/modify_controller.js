@@ -2,8 +2,10 @@ const toRegister = require('../models/register_model');
 const Check = require('../service/member_check');
 const encryption = require('../models/encryption');
 const loginAction = require('../models/login_model');
+const updateAction = require('../models/update_model')
 const jwt = require('jsonwebtoken');
 const config = require('../config/development_config');
+const verify = require('../models/verification');
 
 check = new Check();
 
@@ -28,7 +30,7 @@ module.exports = class Member {
                     err: "請輸入正確的Eamil格式。(如1234@email.com)"
                 }
             })
-            res.send("請輸入正確的Eamil格式。(如1234@email.com)");
+            //res.send("請輸入正確的Eamil格式。(如1234@email.com)");
         // 若符合email格式
         } else if (checkEmail === true) {
             // 將資料寫入資料庫
@@ -38,16 +40,18 @@ module.exports = class Member {
                 res.json({
                     result: result
                 })
+                console.log('registration action completed!');
             }, (err) => {
                 // 若寫入失敗則回傳
                 res.json({
                     err: err
                 })
+                console.log('registration action failed!');
             })
         }
     }
 
-    postLogin(req, res, next){
+    postLogin(req, res, next){ //if login success, return a token
         // encryption
         const password = encryption(req.body.password);
         // 獲取client端資料
@@ -67,6 +71,7 @@ module.exports = class Member {
                         err: 'Wrong email or password!'
                     }
                 })
+                console.log('Login Failed');
             } else{
                 // 產生token
                 const token = jwt.sign({
@@ -81,15 +86,57 @@ module.exports = class Member {
                         loginMember: "Welcome back " + rows[0].name + "!",
                     }
                 })
-            }
-            }, (err) => {
+                console.log("Login Success");
+            }}, (err) => {
                 res.json({
                     err: err
                 })
+                console.log("Login Fail, due to ");
             }
         )
 
 
+    }
+
+    putUpdate(req, res, next) {
+        const token = req.headers['token'];
+        //確定token是否有輸入
+        if (check.checkNull(token) === true) {
+            res.json({
+                err: "Please input token！"
+            })
+        } else if (check.checkNull(token) === false) {
+            verify(token).then(tokenResult => {
+                if (tokenResult === false ) {
+                    res.json({
+                        result: {
+                            status: "Wrong token",
+                            err: "Please login again"
+                        }
+                    })
+                } else {
+                    const id = tokenResult;
+                    // 進行加密
+                    const password = encryption(req.body.password);
+
+                    const memberUpdateData = {
+                        name: req.body.name,
+                        password: password,
+                        update_date: onTime()
+                    }
+
+                    updateAction(id, memberUpdateData).then(result =>{
+                        res.json({
+                            result: result
+                        })
+                    }, err =>{
+                        res.json({
+                            result: err
+                        })
+                    })
+                }
+            })
+        }
     }
 }
 

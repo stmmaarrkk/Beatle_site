@@ -1,11 +1,11 @@
-const toRegister = require('../models/register_model');
-const Check = require('../service/member_check');
-const encryption = require('../models/encryption');
-const loginAction = require('../models/login_model');
-const updateAction = require('../models/update_model')
+const toRegister = require('../../models/member/register_model');
+const Check = require('../../service/member_check');
+const encryption = require('../../models/member/encryption');
+const loginAction = require('../../models/member/login_model');
+const updateAction = require('../../models/member/update_model')
 const jwt = require('jsonwebtoken');
-const config = require('../config/development_config');
-const verify = require('../models/verification');
+const config = require('../../config/development_config');
+const verify = require('../../models/member/verification');
 
 check = new Check();
 

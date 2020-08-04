@@ -1,8 +1,8 @@
 /* use to delete orders */
 const db = require('../connection_db');
-const VerifyOrder = require('./verify_order');
+const OrderTools = require('./tools');
 
-verifyOrder = new VerifyOrder();
+orderTools = new OrderTools();
 
 module.exports = function orderDelete(deleteList) {
     return new Promise(async (resolve, reject) => {
@@ -10,8 +10,8 @@ module.exports = function orderDelete(deleteList) {
 
         // 有幾筆資料就刪除幾次資料
         for (let key in deleteList) {
-            let hasData = await verifyOrder.checkOrderData(deleteList[key].orderID, deleteList[key].memberID, deleteList[key].productID);
-            let hasComplete = await verifyOrder.checkOrderComplete(deleteList[key].orderID, deleteList[key].memberID, deleteList[key].productID);
+            let hasData = await orderTools.checkOrderData(deleteList[key].orderID, deleteList[key].memberID, deleteList[key].productID);
+            let hasComplete = await orderTools.checkOrderComplete(deleteList[key].orderID, deleteList[key].memberID, deleteList[key].productID);
             if (hasData === false) {
                 result.status = "Fail to delete order"
                 result.err = "找不到該筆資料。"

@@ -1,9 +1,9 @@
 /* Update an order*/
 const db = require('../connection_db');
-const VerifyOrder = require('./verify_order');
+const OrderTools = require('./tools');
 const ProductTools = require('../product/tools');
 
-verifyOrder = new VerifyOrder();
+orderTools = new OrderTools();
 productTools = new ProductTools();
 
 module.exports = function orderEdit(updateList) {
@@ -11,10 +11,10 @@ module.exports = function orderEdit(updateList) {
     return new Promise(async (resolve, reject) => {
 
         // 判斷有沒有該筆訂單資料
-        const hasData = await verifyOrder.checkOrderData(updateList.orderID, updateList.memberID, updateList.productID);
+        const hasData = await orderTools.checkOrderData(updateList.orderID, updateList.memberID, updateList.productID);
 
         // 判斷該筆訂單資料是否已完成交易
-        const hasComplete = await verifyOrder.checkOrderComplete(updateList.orderID, updateList.memberID, updateList.productID);
+        const hasComplete = await orderTools.checkOrderComplete(updateList.orderID, updateList.memberID, updateList.productID);
 
         if (hasData === false) {
             result.status = "Fail to update order list"

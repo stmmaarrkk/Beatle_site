@@ -3,7 +3,8 @@ const verify = require('../../models/member/verification');
 const orderProduct = require('../../models/order/order_product_model');
 const updateOrder = require('../../models/order/update_model');
 const deleteSeveralOrder = require('../../models/order/delete_model');
-const addOnCertainOrder = require('../../models/order/add_on_certain_order_model')
+const addOnCertainOrder = require('../../models/order/add_on_certain_order_model');
+const orderComplete = require('../../models/order/complete_model');
 
 
 check = new Check();
@@ -159,6 +160,39 @@ module.exports = class ModifyOrder {
                         createDate: onTime()
                     }
                     addOnCertainOrder(orderOneList).then(result => {
+                        res.json({
+                            result: result
+                        })
+                    }, (err) => {
+                        res.json({
+                            result: err
+                        })
+                    })
+                }
+            })
+        }
+    }
+
+    putProductComplete(req, res, next) {
+        const token = req.headers['token'];
+        //確定token是否有輸入
+        if (check.checkNull(token) === true) {
+            res.json({
+                err: "請輸入token！"
+            })
+        } else if (check.checkNull(token) === false) {
+            verify(token).then(tokenResult => {
+                if (tokenResult === false) {
+                    res.json({
+                        result: {
+                            status: "token錯誤。",
+                            err: "請重新登入。"
+                        }
+                    })
+                } else {
+                    const memberID = tokenResult;
+                    const orderID = req.body.orderID;
+                    orderComplete(orderID, memberID).then(result => {
                         res.json({
                             result: result
                         })

@@ -25,5 +25,8 @@ router.delete('/order', orderModifyMethod.deleteOrder);
 // add an extra quantity on a certain order
 router.post('/order/addoncertainorder', orderModifyMethod.postAddOnCertainOrder);
 
+// complete order
+router.put('/order/complete', orderModifyMethod.putProductComplete);
+
 
 module.exports = router;

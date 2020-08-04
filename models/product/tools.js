@@ -1,6 +1,6 @@
 const db = require('../connection_db');
 
-module.exports = class tool {
+module.exports = class ProductTools {
     getProductPrice(productID) {
         return new Promise((resolve, reject) => {
             db.query('SELECT price FROM product WHERE id = ?', productID, function (err, rows) {

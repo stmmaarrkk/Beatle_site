@@ -1,17 +1,17 @@
 const db = require('../connection_db');
-const VerifyOrder = require('./verify_order');
+const OrderTools = require('./tools');
 const ProductTools = require('../product/tools');
 
-verifyOrder = new VerifyOrder();
+orderTools = new OrderTools();
 productTools = new ProductTools();
 
 module.exports = function postAddOneCertainOrder(orderOneList) {
     let result = {};
     return new Promise(async (resolve, reject) => {
 
-        const hasData = await verifyOrder.checkOrderData(orderOneList.orderID, orderOneList.memberID, orderOneList.productID);
+        const hasData = await orderTools.checkOrderData(orderOneList.orderID, orderOneList.memberID, orderOneList.productID);
 
-        const hasComplete = await verifyOrder.checkOrderComplete(orderOneList.orderID);
+        const hasComplete = await orderTools.checkOrderComplete(orderOneList.orderID);
 
         if (hasData === true) {
             result.status = "新增單筆訂單資料失敗。"
